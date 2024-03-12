@@ -8,8 +8,7 @@
 #include "minish_builtins.h"
 
 int main() {
-  // Take input from the user and print it indefinitely until the user types
-  // "exit"
+  // TODO: Implement a minimal shell loop
   while (1) {
   }
 }
