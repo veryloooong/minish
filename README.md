@@ -4,7 +4,7 @@ IT3070, Project 1
 
 A `mini`mal `sh`ell written in C.
 
-## Features (TODO)
+## Features
 
 - Run commands from specified path (cmds: `path`/`addpath`)
 - Lists all processes and their IDs (cmds: `procls`)
@@ -31,3 +31,6 @@ A `mini`mal `sh`ell written in C.
 - The path variable commands (`minish_path.c`)
   - [ ] `path`
   - [ ] `addpath`
+- Other
+  - [ ] Add control key handling
+  - [ ] Makefile
