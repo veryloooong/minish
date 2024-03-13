@@ -5,7 +5,7 @@
 #include "minish_readline.h"
 
 #define CHUNK_SIZE 256UL
-char *minish_readline(void) {
+char *minish_read_line(void) {
   char *input = NULL;
   int ch;
   size_t input_len = 0;
@@ -32,6 +32,6 @@ char *minish_readline(void) {
 }
 
 char **minish_tokenize_line(char *line) {
-  // TODO: Implement minish_split_line
+  // TODO: Implement this function
   return NULL;
 }

@@ -1,18 +1,35 @@
-#include "minish_builtins.h"
-
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-// List of builtin functions
-int (*minish_builtin_funcs[])(char **, int *) = {&minish_cd,   &minish_ls,
-                                                 &minish_pwd,  &minish_help,
-                                                 &minish_exit, &minish_clear};
+#include "minish_builtins.h"
+#include "utils/colors.h"
 
+/**
+ * Changes the current working directory.
+ * If no argument is provided, changes to the home directory.
+ * If an argument is provided, changes to the specified directory.
+ *
+ * @param args The command arguments. args[0] is the command itself, args[1] is
+ * the directory path.
+ * @param exit_status Pointer to the exit status variable.
+ * @return 1 to continue executing the shell.
+ */
 int minish_cd(char **args, int *exit_status) {
   if (args[1] == NULL) {
-    chdir(getenv("HOME"));
-    *exit_status = 0;
+    char *home_dir = getenv("HOME");
+    if (home_dir == NULL) {
+      fprintf(stderr, "lsh: dir: No $HOME variable set\n");
+      *exit_status = 1;
+    } else {
+      if (chdir(home_dir) != 0) {
+        perror("minish");
+        *exit_status = 1;
+      } else {
+        *exit_status = 0;
+      }
+    }
   } else {
     if (chdir(args[1]) != 0) {
       perror("minish");
@@ -24,14 +41,38 @@ int minish_cd(char **args, int *exit_status) {
   return 1;
 }
 
-int minish_ls(char **args, int *exit_status) {
+int minish_dir(char **args, int *exit_status) {
+  char *directory = NULL;
   if (args[1] == NULL) {
-    // TODO: do ls in the current directory
+    directory = ".";
   } else {
-    // TODO: do ls in the specified directory
+    directory = args[1];
   }
-  printf("unimplemented\n");
-  *exit_status = 1;
+
+  DIR *d;
+  struct dirent *dir;
+  d = opendir(directory);
+  if (d) {
+    while ((dir = readdir(d)) != NULL) {
+      switch (dir->d_type) {
+      case 4:
+        printf(COLOR_BLUE_BOLD "\t%s/\n" COLOR_RESET, dir->d_name);
+        break;
+      case 10:
+        printf(COLOR_GREEN_ITALIC "\t%s\n" COLOR_RESET, dir->d_name);
+        break;
+      default:
+        printf("\t%s\n", dir->d_name);
+        break;
+      }
+    }
+    closedir(d);
+    *exit_status = 0;
+  } else {
+    perror("minish");
+    *exit_status = 1;
+  }
+
   return 1;
 }
 

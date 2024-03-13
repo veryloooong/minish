@@ -16,9 +16,9 @@ A `mini`mal `sh`ell written in C.
 ## Feature tracker
 
 - The basics (`minish_builtins.c`)
-  - [ ] `cd`
-  - [ ] `ls`
-  - [ ] `pwd`
+  - [x] `cd`
+  - [x] `dir`
+  - [x] `pwd`
   - [x] `help`
   - [x] `exit`
   - [x] `clear`
