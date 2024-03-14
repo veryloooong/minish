@@ -55,3 +55,4 @@ make clean # For cleanup
 ## Bugs
 
 - `Ctrl + D` fucks everything up!!!
+- Status color doesn't change for whatever fucking reason

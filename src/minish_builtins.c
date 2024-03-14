@@ -46,18 +46,17 @@ int minish_cd(char **args, int *exit_status) {
 }
 
 int minish_dir(char **args, int *exit_status) {
-  char *directory = NULL;
-  if (args[1] == NULL) {
-    directory = ".";
-  } else {
-    directory = args[1];
-  }
+  char *directory = (args[1] == NULL) ? "." : args[1];
 
   DIR *d;
   struct dirent *dir;
   d = opendir(directory);
+
   if (d) {
     while ((dir = readdir(d)) != NULL) {
+      if (dir->d_name[0] == '.') {
+        continue;
+      }
       switch (dir->d_type) {
       case 4:
         printf(COLOR_BLUE_BOLD "\t%s/\n" COLOR_RESET, dir->d_name);
@@ -119,7 +118,7 @@ int minish_help(char **args __attribute__((unused)), int *exit_status) {
   printf("\nPath variables:\n");
   printf("path\t\tPrint the list of directories to search for executables\n");
   printf("addpath\t\tAdd a directory to the list of directories to search for "
-         "executables\n");
+         "executables\n\n");
 
   *exit_status = 0;
 

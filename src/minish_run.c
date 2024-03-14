@@ -9,7 +9,7 @@
 #include "../include/minish_readline.h"
 #include "../include/minish_run.h"
 
-int minish_run_process(char **args, int *status __attribute__((unused))) {
+int minish_run_process(char **args, int *exit_status) {
   pid_t pid;
   int status_code;
 
@@ -17,11 +17,13 @@ int minish_run_process(char **args, int *status __attribute__((unused))) {
   if (pid < 0) {
     // Error forking
     perror("minish");
+    *exit_status = 1;
   } else if (pid == 0) {
     // Child process
     if (execvp(args[0], args) == -1) {
       perror("minish");
     }
+    *exit_status = 1;
     exit(EXIT_SUCCESS);
   } else {
     do {
@@ -47,20 +49,25 @@ int minish_execute(char **args, int *exit_status) {
   return minish_run_process(args, exit_status);
 }
 
-void minish_main_loop(int *exit_status) {
+int minish_main_loop(void) {
+  int operation_status = 0;
+
   char *line;
   char **args;
   int run_state;
 
-  char *status_color = *exit_status == 0 ? COLOR_GREEN_BOLD : COLOR_RED_BOLD;
-
   do {
+    char *status_color =
+        operation_status == 0 ? COLOR_GREEN_BOLD : COLOR_RED_BOLD;
+    fprintf(stderr, "%d\n", operation_status);
     printf("minish %s>%s ", status_color, COLOR_RESET);
     line = minish_read_line();
     args = minish_make_args(line);
-    run_state = minish_execute(args, exit_status);
+    run_state = minish_execute(args, &operation_status);
 
     free(line);
     free(args);
   } while (run_state);
+
+  return operation_status;
 }

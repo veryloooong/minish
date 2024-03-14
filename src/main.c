@@ -1,9 +1,7 @@
 #include "../include/minish_run.h"
 
 int main(void) {
-  int exit_status = 0;
+  int status = minish_main_loop();
 
-  minish_main_loop(&exit_status);
-
-  return exit_status;
+  return status;
 }
