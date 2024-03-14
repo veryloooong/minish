@@ -31,7 +31,27 @@ A `mini`mal `sh`ell written in C.
 - The path variable commands (`minish_path.c`)
   - [ ] `path`
   - [ ] `addpath`
+- The process manager (`minish_process.c`)
+  - [ ] `procls`
+  - [ ] `prockill`
+  - [ ] `procstop`
+  - [ ] `procresume`
 - Other
-  - [ ] Add control key handling
-  - [ ] Makefile
+  - [ ] Add control key handling (`Ctrl + D`, `Ctrl + Z`, etc.)
+  - [x] Makefile
   - [x] Colours
+  - [ ] `cwd` in shell prompt
+
+## Instructions
+
+```bash
+make # For building
+
+./build/minish
+
+make clean # For cleanup
+```
+
+## Bugs
+
+- `Ctrl + D` fucks everything up!!!

@@ -107,19 +107,21 @@ finalize:
   return is_quoted ? unescape_token(start) : start;
 }
 
+// TODO fix this
 #define TOKEN_CHUNK_SIZE 64UL
 char **minish_make_args(char *line) {
   size_t token_buffer_cap = TOKEN_CHUNK_SIZE;
-  size_t token_buffer_len = 0;
+  size_t token_buffer_len = 0UL;
   char **token_buffer = malloc(token_buffer_cap * sizeof(*token_buffer));
 
   if (!token_buffer) {
     return NULL;
   }
 
-  char *token = NULL;
+  char *current = line;
+  char *token = tokenize(current, &current);
 
-  while ((token = tokenize(line, &line))) {
+  while (*token) {
     token_buffer[token_buffer_len++] = token;
 
     if (token_buffer_len >= token_buffer_cap) {
@@ -130,6 +132,8 @@ char **minish_make_args(char *line) {
         return NULL;
       }
     }
+
+    token = tokenize(current, &current);
   }
 
   token_buffer[token_buffer_len] = NULL;

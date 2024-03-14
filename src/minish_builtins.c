@@ -6,6 +6,10 @@
 #include "../include/colors.h"
 #include "../include/minish_builtins.h"
 
+int minish_num_builtins(void) {
+  return sizeof(minish_builtin_strs) / sizeof(char *);
+}
+
 /**
  * Changes the current working directory.
  * If no argument is provided, changes to the home directory.

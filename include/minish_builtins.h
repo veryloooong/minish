@@ -13,13 +13,12 @@ int minish_exit(char **args, int *exit_status);
 // clear
 int minish_clear(char **args, int *exit_status);
 
-char *minish_builtin_strs[] = {"cd", "dir", "pwd", "help", "exit", "clear"};
+static const char *minish_builtin_strs[] = {"cd",   "dir",  "pwd",
+                                            "help", "exit", "clear"};
 
-int minish_num_builtins(void) {
-  return sizeof(minish_builtin_strs) / sizeof(char *);
-}
+int minish_num_builtins(void);
 
-int (*minish_builtin_funcs[])(char **, int *) = {
+static int (*minish_builtin_funcs[])(char **, int *) = {
     &minish_cd,   &minish_dir,  &minish_pwd,
     &minish_help, &minish_exit, &minish_clear,
 };
