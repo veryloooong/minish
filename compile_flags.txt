@@ -1,1 +1,5 @@
+-Wall
+-Wextra
+-pedantic
 -std=c11
+-O2

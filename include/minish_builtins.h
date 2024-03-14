@@ -1,16 +1,4 @@
-/*
- * Builtin functions for minish
- *
- * Has the following functions:
- * - cd
- * - ls
- * - pwd
- * - help
- * - exit
- */
-
-#ifndef BUILTINS_H_IMPL
-#define BUILTINS_H_IMPL
+#pragma once
 
 // cd
 int minish_cd(char **args, int *exit_status);
@@ -27,7 +15,7 @@ int minish_clear(char **args, int *exit_status);
 
 char *minish_builtin_strs[] = {"cd", "dir", "pwd", "help", "exit", "clear"};
 
-int minish_num_builtins() {
+int minish_num_builtins(void) {
   return sizeof(minish_builtin_strs) / sizeof(char *);
 }
 
@@ -35,5 +23,3 @@ int (*minish_builtin_funcs[])(char **, int *) = {
     &minish_cd,   &minish_dir,  &minish_pwd,
     &minish_help, &minish_exit, &minish_clear,
 };
-
-#endif

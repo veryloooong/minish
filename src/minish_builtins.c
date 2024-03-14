@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "minish_builtins.h"
-#include "utils/colors.h"
+#include "../include/colors.h"
+#include "../include/minish_builtins.h"
 
 /**
  * Changes the current working directory.

@@ -4,10 +4,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "minish_builtins.h"
-#include "minish_readline.h"
-#include "minish_run.h"
-#include "utils/colors.h"
+#include "../include/colors.h"
+#include "../include/minish_builtins.h"
+#include "../include/minish_readline.h"
+#include "../include/minish_run.h"
 
 int minish_run_process(char **args, int *status __attribute__((unused))) {
   pid_t pid;
@@ -57,7 +57,7 @@ void minish_main_loop(int *exit_status) {
   do {
     printf("minish %s>%s ", status_color, COLOR_RESET);
     line = minish_read_line();
-    args = minish_tokenize_line(line);
+    args = minish_make_args(line);
     run_state = minish_execute(args, exit_status);
 
     free(line);

@@ -24,13 +24,14 @@ A `mini`mal `sh`ell written in C.
   - [x] `clear`
 - The input parsing utils (`minish_readline.c`)
   - [x] `read_line`
-  - [ ] `tokenize_line`
+  - [x] `make_args`
 - The execution utils (`minish_run.c`)
-  - [ ] `run`
-  - [ ] `execute`
+  - [x] `run`
+  - [x] `execute`
 - The path variable commands (`minish_path.c`)
   - [ ] `path`
   - [ ] `addpath`
 - Other
   - [ ] Add control key handling
   - [ ] Makefile
+  - [x] Colours
