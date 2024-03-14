@@ -57,9 +57,7 @@ void minish_main_loop(int *exit_status) {
   do {
     printf("minish %s>%s ", status_color, COLOR_RESET);
     line = minish_read_line();
-    fprintf(stderr, "Input:\t%s\n", line);
     args = minish_make_args(line);
-    fprintf(stderr, "Args:\t%s\n", args[0]);
     run_state = minish_execute(args, exit_status);
 
     free(line);
