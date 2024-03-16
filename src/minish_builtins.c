@@ -4,10 +4,21 @@
 #include <unistd.h>
 
 #include "../include/colors.h"
+#include "../include/main.h"
 #include "../include/minish_builtins.h"
+#include "../include/minish_path.h"
+
+builtin_t minish_builtins[] = {{"cd", minish_cd},
+                               {"ls", minish_ls},
+                               {"pwd", minish_pwd},
+                               {"help", minish_help},
+                               {"clear", minish_clear},
+                               {"exit", minish_exit},
+                               {"pathls", minish_path_list},
+                               {"pathadd", minish_path_add}};
 
 int minish_num_builtins(void) {
-  return sizeof(minish_builtin_strs) / sizeof(char *);
+  return sizeof(minish_builtins) / sizeof(builtin_t);
 }
 
 /**
@@ -45,7 +56,7 @@ int minish_cd(char **args, int *exit_status) {
   return 1;
 }
 
-int minish_dir(char **args, int *exit_status) {
+int minish_ls(char **args, int *exit_status) {
   char *directory = (args[1] == NULL) ? "." : args[1];
 
   DIR *d;
@@ -79,7 +90,7 @@ int minish_dir(char **args, int *exit_status) {
   return 1;
 }
 
-int minish_pwd(char **args __attribute__((unused)), int *exit_status) {
+int minish_pwd(char **args __UNUSED, int *exit_status) {
   char cwd[1024];
 
   if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -93,22 +104,19 @@ int minish_pwd(char **args __attribute__((unused)), int *exit_status) {
   return 1;
 }
 
-int minish_help(char **args __attribute__((unused)), int *exit_status) {
-  printf("minish - minimal shell\n\n");
+int minish_help(char **args __UNUSED, int *exit_status) {
+#define BOLD_COMMAND(x) COLOR_GREEN_BOLD x COLOR_RESET
+
+  printf("\nminish - minimal shell\n\n");
   printf("Builtins:\n");
 
-  // cd
-  printf("cd\t\tChange the current working directory\n");
-  // ls
-  printf("ls\t\tList files in the current directory\n");
-  // pwd
-  printf("pwd\t\tPrint the current working directory\n");
-  // help
-  printf("help\t\tDisplay this help message\n");
-  // clear
-  printf("clear\t\tClear the terminal\n");
-  // exit
-  printf("exit\t\tExit the shell\n");
+  // Builtins
+  printf(BOLD_COMMAND("cd") "\t\tChange the current working directory\n");
+  printf(BOLD_COMMAND("ls") "\t\tList files in the current directory\n");
+  printf(BOLD_COMMAND("pwd") "\t\tPrint the current working directory\n");
+  printf(BOLD_COMMAND("help") "\t\tDisplay this help message\n");
+  printf(BOLD_COMMAND("clear") "\t\tClear the terminal\n");
+  printf(BOLD_COMMAND("exit") "\t\tExit the shell\n");
 
   // Non builtins and executables
   printf("\nNon builtins and executables:\n");
@@ -116,9 +124,23 @@ int minish_help(char **args __attribute__((unused)), int *exit_status) {
 
   // Path variables
   printf("\nPath variables:\n");
-  printf("path\t\tPrint the list of directories to search for executables\n");
-  printf("addpath\t\tAdd a directory to the list of directories to search for "
-         "executables\n\n");
+  printf(BOLD_COMMAND("pathls") "\t\tPrint the list of directories to search "
+                                "for executables\n");
+  printf(BOLD_COMMAND(
+      "pathadd") "\t\tAdd a directory to the list of directories to search for "
+                 "executables\n");
+  printf(BOLD_COMMAND(
+      "pathrm") "\t\tRemove a directory from the list of directories to search "
+                "for executables\n");
+
+  // Process management
+  printf("\nProcess management:\n");
+  printf(BOLD_COMMAND("bg") "\t\tRun a process in the background\n");
+  printf(BOLD_COMMAND("fg") "\t\tRun a process in the foreground\n");
+  printf(BOLD_COMMAND("procls") "\t\tList running processes\n");
+  printf(BOLD_COMMAND("prockill") "\t\tKill a running process\n");
+  printf(BOLD_COMMAND("procstop") "\t\tStop a running process\n");
+  printf(BOLD_COMMAND("proccont") "\t\tContinue a stopped process\n");
 
   *exit_status = 0;
 
@@ -135,7 +157,7 @@ int minish_exit(char **args, int *exit_status) {
   return 0;
 }
 
-int minish_clear(char **args __attribute__((unused)), int *exit_status) {
+int minish_clear(char **args __UNUSED, int *exit_status) {
   printf("\033[H\033[J");
   *exit_status = 0;
   return 1;

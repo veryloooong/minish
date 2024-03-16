@@ -27,20 +27,27 @@ A `mini`mal `sh`ell written in C.
   - [x] `make_args`
 - The execution utils (`minish_run.c`)
   - [x] `run`
+    - [ ] Run processes in foreground or background mode
+    - [ ] Use our own path (currently delegated to system PATH because `execvp`)
   - [x] `execute`
 - The path variable commands (`minish_path.c`)
-  - [ ] `path`
-  - [ ] `addpath`
+  - [ ] `pathls`
+  - [ ] `pathadd`
+  - [ ] `pathrm`
 - The process manager (`minish_process.c`)
+  - [ ] `fg` / `bg`
   - [ ] `procls`
   - [ ] `prockill`
   - [ ] `procstop`
-  - [ ] `procresume`
+  - [ ] `proccont`
 - Other
   - [ ] Add control key handling (`Ctrl + D`, `Ctrl + Z`, etc.)
+    - [ ] `Ctrl + C` interrupts and kills foreground task
+    - [ ] `Ctrl + D` exits shell 
   - [x] Makefile
   - [x] Colours
   - [ ] `cwd` in shell prompt
+  - [ ] Tab completion
 
 ## Instructions
 
