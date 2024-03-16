@@ -51,6 +51,12 @@ A `mini`mal `sh`ell written in C.
 
 ## Instructions
 
+### For Windows
+
+Not implemented yet
+
+### For Linux
+
 ```bash
 make # For building
 
