@@ -24,7 +24,7 @@ CC := gcc
 CXX := g++
 
 # Flags for the C compiler
-CFLAGS := -Wall -Wextra -std=c11 -O2
+CFLAGS := -Wall -Wextra -g -std=c11 
 
 # The -MMD and -MP flags together generate Makefiles for us!
 # These files will have .d instead of .o as the output.

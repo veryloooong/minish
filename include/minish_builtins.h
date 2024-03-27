@@ -20,12 +20,4 @@ typedef struct builtin_t {
 
 extern builtin_t minish_builtins[];
 
-// static const char *minish_builtin_strs[] = {"cd",   "dir",  "pwd",
-//                                             "help", "exit", "clear"};
-
 int minish_num_builtins(void);
-
-// static int (*minish_builtin_funcs[])(char **, int *) = {
-//     &minish_cd,   &minish_dir,  &minish_pwd,
-//     &minish_help, &minish_exit, &minish_clear,
-// };

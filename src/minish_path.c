@@ -12,17 +12,24 @@
 Path *path_new(char *path);
 PathList *path_list_new(void);
 PathList *get_paths_from_env(void);
+void minish_path_init(int use_env);
+void minish_path_destroy(void);
 void path_list_push(PathList *paths, char *path);
 bool path_list_remove(PathList *paths, char *path);
 void path_list_free(PathList *paths);
 
+// Global variables
+
+PathList *path_list = NULL;
+
 // Main function implementations
 
 int minish_path_list(char **args __UNUSED, int *exit_status) {
+  // why is this segfaulting
   Path *current = path_list->head;
 
   while (current != NULL) {
-    printf("%s\n", current->path);
+    printf("%s%c", current->path, current->next == NULL ? '\n' : ':');
     current = current->next;
   }
 
@@ -38,6 +45,23 @@ int minish_path_add(char **args, int *exit_status) {
   }
 
   path_list_push(path_list, args[1]);
+  *exit_status = 0;
+  return 1;
+}
+
+int minish_path_remove(char **args, int *exit_status) {
+  if (args[1] == NULL) {
+    fprintf(stderr, "minish: pathrm: missing argument\n");
+    *exit_status = 1;
+    return 1;
+  }
+
+  if (!path_list_remove(path_list, args[1])) {
+    fprintf(stderr, "minish: pathrm: path not found\n");
+    *exit_status = 1;
+    return 1;
+  }
+
   *exit_status = 0;
   return 1;
 }
@@ -113,4 +137,21 @@ void path_list_free(PathList *paths) {
     current = next;
   }
   free(paths);
+}
+
+void minish_path_init(int use_env) {
+  if (path_list != NULL) {
+    minish_path_destroy();
+  }
+
+  if (use_env) {
+    path_list = get_paths_from_env();
+  } else {
+    path_list = path_list_new();
+  }
+}
+
+void minish_path_destroy(void) {
+  path_list_free(path_list);
+  path_list = NULL;
 }

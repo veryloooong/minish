@@ -15,11 +15,10 @@ builtin_t minish_builtins[] = {{"cd", minish_cd},
                                {"clear", minish_clear},
                                {"exit", minish_exit},
                                {"pathls", minish_path_list},
-                               {"pathadd", minish_path_add}};
+                               {"pathadd", minish_path_add},
+                               {"pathrm", minish_path_remove}};
 
-int minish_num_builtins(void) {
-  return sizeof(minish_builtins) / sizeof(builtin_t);
-}
+int minish_num_builtins(void) { return sizeof(minish_builtins) / sizeof(builtin_t); }
 
 /**
  * Changes the current working directory.
@@ -56,6 +55,14 @@ int minish_cd(char **args, int *exit_status) {
   return 1;
 }
 
+/**
+ * Lists the contents of a directory.
+ *
+ * @param args The command arguments. The second (`args[1]`) argument is the directory path. If
+ * unspecified, defaults to the current directory.
+ * @param exit_status A pointer to the exit status variable.
+ * @return 1 indicating successful execution.
+ */
 int minish_ls(char **args, int *exit_status) {
   char *directory = (args[1] == NULL) ? "." : args[1];
 
@@ -126,21 +133,19 @@ int minish_help(char **args __UNUSED, int *exit_status) {
   printf("\nPath variables:\n");
   printf(BOLD_COMMAND("pathls") "\t\tPrint the list of directories to search "
                                 "for executables\n");
-  printf(BOLD_COMMAND(
-      "pathadd") "\t\tAdd a directory to the list of directories to search for "
-                 "executables\n");
-  printf(BOLD_COMMAND(
-      "pathrm") "\t\tRemove a directory from the list of directories to search "
-                "for executables\n");
+  printf(BOLD_COMMAND("pathadd") "\t\tAdd a directory to the list of directories to search for "
+                                 "executables\n");
+  printf(BOLD_COMMAND("pathrm") "\t\tRemove a directory from the list of directories to search "
+                                "for executables\n");
 
   // Process management
   printf("\nProcess management:\n");
   printf(BOLD_COMMAND("bg") "\t\tRun a process in the background\n");
   printf(BOLD_COMMAND("fg") "\t\tRun a process in the foreground\n");
   printf(BOLD_COMMAND("procls") "\t\tList running processes\n");
-  printf(BOLD_COMMAND("prockill") "\t\tKill a running process\n");
-  printf(BOLD_COMMAND("procstop") "\t\tStop a running process\n");
-  printf(BOLD_COMMAND("proccont") "\t\tContinue a stopped process\n");
+  printf(BOLD_COMMAND("prockill") "\tKill a running process\n");
+  printf(BOLD_COMMAND("procstop") "\tStop a running process\n");
+  printf(BOLD_COMMAND("proccont") "\tContinue a stopped process\n");
 
   *exit_status = 0;
 
