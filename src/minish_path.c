@@ -25,7 +25,6 @@ PathList *path_list = NULL;
 // Main function implementations
 
 int minish_path_list(char **args __UNUSED, int *exit_status) {
-  // why is this segfaulting
   Path *current = path_list->head;
 
   while (current != NULL) {

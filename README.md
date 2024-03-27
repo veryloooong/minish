@@ -31,9 +31,10 @@ A `mini`mal `sh`ell written in C.
     - [ ] Use our own path (currently delegated to system PATH because `execvp`)
   - [x] `execute`
 - The path variable commands (`minish_path.c`)
-  - [ ] `pathls`
-  - [ ] `pathadd`
-  - [ ] `pathrm`
+  - [x] `pathls`
+  - [x] `pathadd`
+  - [x] `pathrm`
+  - [ ] Now make them run with path
 - The process manager (`minish_process.c`)
   - [ ] `fg` / `bg`
   - [ ] `procls`
@@ -47,7 +48,7 @@ A `mini`mal `sh`ell written in C.
   - [x] Makefile
   - [x] Colours
   - [ ] `cwd` in shell prompt
-  - [ ] Tab completion
+  - [ ] Tab completion (nah id lose)
 
 ## Instructions
 
@@ -69,3 +70,7 @@ make clean # For cleanup
 
 - `Ctrl + D` fucks everything up!!!
 - Status color doesn't change for whatever fucking reason
+
+## Credits
+
+- [Argparse lib](https://github.com/cofyc/argparse)
