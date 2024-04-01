@@ -1,26 +1,30 @@
+#include "../include/minish_path.h"
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "../include/main.h"
-#include "../include/minish_path.h"
 
 // Helper function prototypes
 
 Path *path_new(char *path);
 PathList *path_list_new(void);
 PathList *get_paths_from_env(void);
+char *minish_path_get_str(void);
 void minish_path_init(int use_env);
 void minish_path_destroy(void);
-void path_list_push(PathList *paths, char *path);
+void path_list_append(PathList *paths, char *path);
 bool path_list_remove(PathList *paths, char *path);
 void path_list_free(PathList *paths);
+char *make_absolute_path(char *dir, char *file);
 
 // Global variables
 
-PathList *path_list = NULL;
+static PathList *path_list = NULL;
 
 // Main function implementations
 
@@ -43,7 +47,7 @@ int minish_path_add(char **args, int *exit_status) {
     return 1;
   }
 
-  path_list_push(path_list, args[1]);
+  path_list_append(path_list, args[1]);
   *exit_status = 0;
   return 1;
 }
@@ -65,6 +69,67 @@ int minish_path_remove(char **args, int *exit_status) {
   return 1;
 }
 
+char *minish_path_find(char *file) {
+  Path *current = path_list->head;
+
+  while (current != NULL) {
+    char *absolute_path = make_absolute_path(current->path, file);
+    if (access(absolute_path, F_OK) != -1) {
+      return absolute_path;
+    }
+    free(absolute_path);
+    current = current->next;
+  }
+
+  return NULL;
+}
+
+// Remember to free after use
+char *minish_path_get_str(void) {
+  Path *current = path_list->head;
+  size_t len = 0;
+
+  while (current != NULL) {
+    len += strlen(current->path) + 1;
+    current = current->next;
+  }
+
+  char *path_str = (char *)malloc(len + 1);
+  char *path_str_ptr = path_str;
+
+  current = path_list->head;
+
+  while (current != NULL) {
+    size_t path_len = strlen(current->path);
+    strncpy(path_str_ptr, current->path, path_len);
+    path_str_ptr += path_len;
+    *path_str_ptr = ':';
+    path_str_ptr++;
+    current = current->next;
+  }
+
+  *(path_str_ptr - 1) = '\0';
+
+  return path_str;
+}
+
+void minish_path_init(int use_env) {
+  if (path_list != NULL) {
+    minish_path_destroy();
+  }
+
+  if (use_env) {
+    path_list = get_paths_from_env();
+  } else {
+    path_list = path_list_new();
+  }
+}
+
+void minish_path_destroy(void) {
+  path_list_free(path_list);
+  path_list = NULL;
+}
+
 // Helper function implementations
 
 Path *path_new(char *path) {
@@ -79,6 +144,7 @@ Path *path_new(char *path) {
 PathList *path_list_new(void) {
   PathList *pl = malloc(sizeof(PathList));
   pl->head = NULL;
+  pl->tail = NULL;
   return pl;
 }
 
@@ -89,17 +155,21 @@ PathList *get_paths_from_env(void) {
   strcpy(path_copy, path);
   char *path_token = strtok(path_copy, ":");
   while (path_token != NULL) {
-    path_list_push(paths, path_token);
+    path_list_append(paths, path_token);
     path_token = strtok(NULL, ":");
   }
   free(path_copy);
   return paths;
 }
 
-void path_list_push(PathList *paths, char *path) {
+void path_list_append(PathList *paths, char *path) {
   Path *new_path = path_new(path);
-  new_path->next = paths->head;
-  paths->head = new_path;
+  if (paths->head == NULL) {
+    paths->head = new_path;
+  } else {
+    paths->tail->next = new_path;
+  }
+  paths->tail = new_path;
 }
 
 bool path_list_remove(PathList *paths, char *path) {
@@ -112,9 +182,9 @@ bool path_list_remove(PathList *paths, char *path) {
     if (strncmp(current->path, path, path_len) == 0) {
       // Found the path to remove
       if (prev == NULL) {
-        paths->head = current->next; // Removing the head
+        paths->head = current->next;  // Removing the head
       } else {
-        prev->next = current->next; // Removing from the middle or end
+        prev->next = current->next;  // Removing from the middle or end
       }
       free(current->path);
       free(current);
@@ -138,19 +208,13 @@ void path_list_free(PathList *paths) {
   free(paths);
 }
 
-void minish_path_init(int use_env) {
-  if (path_list != NULL) {
-    minish_path_destroy();
-  }
+char *make_absolute_path(char *dir, char *file) {
+  size_t dirlen = strlen(dir);
+  size_t filelen = strlen(file);
 
-  if (use_env) {
-    path_list = get_paths_from_env();
-  } else {
-    path_list = path_list_new();
-  }
-}
-
-void minish_path_destroy(void) {
-  path_list_free(path_list);
-  path_list = NULL;
+  char *absolute_path = malloc(strlen(dir) + strlen(file) + 10);
+  strncpy(absolute_path, dir, dirlen + 1);
+  strncat(absolute_path, "/", 2);
+  strncat(absolute_path, file, filelen + 1);
+  return absolute_path;
 }

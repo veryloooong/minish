@@ -69,8 +69,10 @@ make clean # For cleanup
 ## Bugs
 
 - `Ctrl + D` fucks everything up!!!
-- Status color doesn't change for whatever fucking reason
+- Status color doesn't change on other cmd run for whatever reason
 
 ## Credits
 
 - [Argparse lib](https://github.com/cofyc/argparse)
+- [How to build a C shell](https://brennan.io/2015/01/16/write-a-shell-in-c/)
+  - [Source code (didn't copy btw)](https://github.com/brenns10/lsh)

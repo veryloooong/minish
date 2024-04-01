@@ -1,3 +1,5 @@
+#include "../include/minish_run.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,12 +10,10 @@
 #include "../include/minish_builtins.h"
 #include "../include/minish_path.h"
 #include "../include/minish_readline.h"
-#include "../include/minish_run.h"
 
 int minish_run_process(char **args, int *exit_status) {
   pid_t pid;
   int status_code;
-  // char *env_vars[] = {"PATH=/usr/local/bin", NULL};
 
   pid = fork();
   if (pid < 0) {
@@ -21,17 +21,22 @@ int minish_run_process(char **args, int *exit_status) {
     *exit_status = 1;
   } else if (pid == 0) {
     // TODO: Make this run from our own path instead of the system's
-    // if (execve(args[0], args, env_vars) == -1) {
-    if (execvp(args[0], args) == -1) {
+    char *executable = minish_path_find(args[0]);
+    if (executable != NULL) {
+      args[0] = executable;
+      fprintf(stderr, "minish: using %s\n", executable);
+    }
+    if (execve(args[0], args, NULL) == -1) {
       perror("minish");
     }
     *exit_status = 1;
     exit(EXIT_FAILURE);
   } else {
-    // Parent process
     do {
       waitpid(pid, &status_code, WUNTRACED);
     } while (!WIFEXITED(status_code) && !WIFSIGNALED(status_code));
+
+    *exit_status = WEXITSTATUS(status_code);
   }
 
   return 1;
@@ -57,7 +62,7 @@ int minish_main_loop(void) {
 
   char *line;
   char **args;
-  int run_state;
+  int run_state = 1;
 
   do {
     char *status_color = operation_status == 0 ? COLOR_GREEN_BOLD : COLOR_RED_BOLD;

@@ -20,4 +20,5 @@ typedef struct path_t {
  */
 typedef struct path_list_t {
   Path *head; /** Pointer to the first path in the linked list. */
+  Path *tail; /** Pointer to the last path in the linked list. */
 } PathList;

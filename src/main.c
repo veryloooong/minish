@@ -1,11 +1,10 @@
 #include <stdlib.h>
 
 #include "../include/argparse.h"
-#include "../include/main.h"
 #include "../include/minish_path.h"
 #include "../include/minish_run.h"
 
-static const char *usages[] = {
+const char *usages[] = {
     "minish [OPTION]...",
     NULL,
 };

@@ -1,3 +1,5 @@
+#include "../include/minish_builtins.h"
+
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,7 +7,6 @@
 
 #include "../include/colors.h"
 #include "../include/main.h"
-#include "../include/minish_builtins.h"
 #include "../include/minish_path.h"
 
 builtin_t minish_builtins[] = {{"cd", minish_cd},
@@ -34,7 +35,7 @@ int minish_cd(char **args, int *exit_status) {
   if (args[1] == NULL) {
     char *home_dir = getenv("HOME");
     if (home_dir == NULL) {
-      fprintf(stderr, "lsh: dir: No $HOME variable set\n");
+      fprintf(stderr, "lsh: dir: no $HOME variable set\n");
       *exit_status = 1;
     } else {
       if (chdir(home_dir) != 0) {
@@ -76,19 +77,18 @@ int minish_ls(char **args, int *exit_status) {
         continue;
       }
       switch (dir->d_type) {
-      case 4:
-        printf(COLOR_BLUE_BOLD "\t%s/\n" COLOR_RESET, dir->d_name);
-        break;
-      case 10:
-        printf(COLOR_GREEN_ITALIC "\t%s\n" COLOR_RESET, dir->d_name);
-        break;
-      default:
-        printf("\t%s\n", dir->d_name);
-        break;
+        case 4:
+          printf(COLOR_BLUE_BOLD "\t%s/\n" COLOR_RESET, dir->d_name);
+          break;
+        case 10:
+          printf(COLOR_GREEN_ITALIC "\t%s\n" COLOR_RESET, dir->d_name);
+          break;
+        default:
+          printf("\t%s\n", dir->d_name);
+          break;
       }
     }
-    closedir(d);
-    *exit_status = 0;
+    *exit_status = closedir(d);
   } else {
     perror("minish");
     *exit_status = 1;
