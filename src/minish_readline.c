@@ -1,10 +1,10 @@
+#include "../include/minish_readline.h"
+
 #include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "../include/minish_readline.h"
 
 #define CHUNK_SIZE 256UL
 char *minish_read_line(void) {
@@ -58,8 +58,7 @@ char *tokenize(char *str, char **next) {
   bool is_quoted = false;
 
   // Clear spaces
-  while (*current && isspace(*current))
-    current++;
+  while (*current && isspace(*current)) current++;
   start = current;
 
   // Check if the token is quoted
@@ -70,12 +69,10 @@ char *tokenize(char *str, char **next) {
     start = current;
     while (1) {
       // Go until we find a quote or the end of string.
-      while (*current && (*current != '"'))
-        current++;
+      while (*current && (*current != '"')) current++;
 
       // End of string
-      if (*current == '\0')
-        goto finalize;
+      if (*current == '\0') goto finalize;
 
       // Check if the quote is escaped
       if (*(current - 1) == '\\') {
@@ -89,8 +86,7 @@ char *tokenize(char *str, char **next) {
   }
 
   // If the token is not quoted, go until we find a space or the end of string
-  while (*current && !isspace(*current))
-    current++;
+  while (*current && !isspace(*current)) current++;
 
 // Finalize the token
 finalize:
@@ -99,15 +95,13 @@ finalize:
     current++;
 
     // Clear spaces
-    while (*current && isspace(*current))
-      current++;
+    while (*current && isspace(*current)) current++;
   }
   *next = current;
 
   return is_quoted ? unescape_token(start) : start;
 }
 
-// TODO fix this
 #define TOKEN_CHUNK_SIZE 64UL
 char **minish_make_args(char *line) {
   size_t token_buffer_cap = TOKEN_CHUNK_SIZE;
@@ -126,8 +120,7 @@ char **minish_make_args(char *line) {
 
     if (token_buffer_len >= token_buffer_cap) {
       token_buffer_cap += TOKEN_CHUNK_SIZE;
-      token_buffer =
-          realloc(token_buffer, token_buffer_cap * sizeof(*token_buffer));
+      token_buffer = realloc(token_buffer, token_buffer_cap * sizeof(*token_buffer));
       if (!token_buffer) {
         return NULL;
       }
