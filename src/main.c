@@ -11,12 +11,14 @@ const char *usages[] = {
 
 int main(int argc, const char **argv) {
   int use_env = 0;
+  int verbose = 0;
 
   struct argparse_option options[] = {
       OPT_HELP(),
       // OPT_GROUP("Basic options:"),
       OPT_BOOLEAN('e', "use-env", &use_env, "Use the system's PATH environment variable", NULL, 0,
                   0),
+      OPT_BOOLEAN('v', "verbose", &verbose, "Print extra debug information", NULL, 0, 0),
       OPT_END(),
   };
 
@@ -27,6 +29,7 @@ int main(int argc, const char **argv) {
 
   minish_path_init(use_env);
 
+  // TODO: Implement verbose mode
   int status = minish_main_loop();
 
   minish_path_destroy();

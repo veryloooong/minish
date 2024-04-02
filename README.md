@@ -28,13 +28,13 @@ A `mini`mal `sh`ell written in C.
 - The execution utils (`minish_run.c`)
   - [x] `run`
     - [ ] Run processes in foreground or background mode
-    - [ ] Use our own path (currently delegated to system PATH because `execvp`)
+    - [x] Use our own path (currently delegated to system PATH because `execvp`)
   - [x] `execute`
 - The path variable commands (`minish_path.c`)
   - [x] `pathls`
   - [x] `pathadd`
   - [x] `pathrm`
-  - [ ] Now make them run with path
+  - [x] Now make them run with path
 - The process manager (`minish_process.c`)
   - [ ] `fg` / `bg`
   - [ ] `procls`
@@ -76,3 +76,4 @@ make clean # For cleanup
 - [Argparse lib](https://github.com/cofyc/argparse)
 - [How to build a C shell](https://brennan.io/2015/01/16/write-a-shell-in-c/)
   - [Source code (didn't copy btw)](https://github.com/brenns10/lsh)
+- [Hash table implementation](https://github.com/google/cwisstable)

@@ -24,7 +24,7 @@ int minish_run_process(char **args, int *exit_status) {
     char *executable = minish_path_find(args[0]);
     if (executable != NULL) {
       args[0] = executable;
-      fprintf(stderr, "minish: using %s\n", executable);
+      // fprintf(stderr, "minish: using %s\n", executable);
     }
     if (execve(args[0], args, NULL) == -1) {
       perror("minish");

@@ -154,11 +154,8 @@ int minish_help(char **args __UNUSED, int *exit_status) {
 
 // Always return 0 to signal the shell to exit
 int minish_exit(char **args, int *exit_status) {
-  if (args[1] != NULL) {
-    *exit_status = atoi(args[1]);
-  } else {
-    *exit_status = 0;
-  }
+  if (args[1] != NULL) *exit_status = atoi(args[1]);
+
   return 0;
 }
 
