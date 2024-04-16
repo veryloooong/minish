@@ -70,6 +70,7 @@ make clean # For cleanup
 
 - `Ctrl + D` fucks everything up!!!
 - Status color doesn't change on other cmd run for whatever reason
+  - fixed
 
 ## Credits
 

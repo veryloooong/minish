@@ -8,6 +8,7 @@
 #include "../include/colors.h"
 #include "../include/main.h"
 #include "../include/minish_path.h"
+#include "../include/minish_process.h"
 
 builtin_t minish_builtins[] = {{"cd", minish_cd},
                                {"ls", minish_ls},
@@ -17,7 +18,11 @@ builtin_t minish_builtins[] = {{"cd", minish_cd},
                                {"exit", minish_exit},
                                {"pathls", minish_path_list},
                                {"pathadd", minish_path_add},
-                               {"pathrm", minish_path_remove}};
+                               {"pathrm", minish_path_remove},
+                               {"procls", minish_process_ls},
+                               {"prockill", minish_process_kill},
+                               {"procstop", minish_process_stop},
+                               {"proccont", minish_process_continue}};
 
 int minish_num_builtins(void) { return sizeof(minish_builtins) / sizeof(builtin_t); }
 
