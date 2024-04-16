@@ -16,21 +16,65 @@ A `mini`mal `sh`ell written in C.
 ## Feature tracker
 
 - The basics (`minish_builtins.c`)
-  - [ ] `cd`
-  - [ ] `ls`
-  - [ ] `pwd`
+  - [x] `cd`
+  - [x] `dir`
+  - [x] `pwd`
   - [x] `help`
   - [x] `exit`
   - [x] `clear`
 - The input parsing utils (`minish_readline.c`)
   - [x] `read_line`
-  - [ ] `tokenize_line`
+  - [x] `make_args`
 - The execution utils (`minish_run.c`)
-  - [ ] `run`
-  - [ ] `execute`
+  - [x] `run`
+    - [ ] Run processes in foreground or background mode
+    - [x] Use our own path (currently delegated to system PATH because `execvp`)
+  - [x] `execute`
 - The path variable commands (`minish_path.c`)
-  - [ ] `path`
-  - [ ] `addpath`
+  - [x] `pathls`
+  - [x] `pathadd`
+  - [x] `pathrm`
+  - [x] Now make them run with path
+- The process manager (`minish_process.c`)
+  - [ ] `fg` / `bg`
+  - [ ] `procls`
+  - [ ] `prockill`
+  - [ ] `procstop`
+  - [ ] `proccont`
 - Other
-  - [ ] Add control key handling
-  - [ ] Makefile
+  - [ ] Add control key handling (`Ctrl + D`, `Ctrl + Z`, etc.)
+    - [ ] `Ctrl + C` interrupts and kills foreground task
+    - [ ] `Ctrl + D` exits shell 
+  - [x] Makefile
+  - [x] Colours
+  - [ ] `cwd` in shell prompt
+  - [ ] Tab completion (nah id lose)
+
+## Instructions
+
+### For Windows
+
+Not implemented yet
+
+### For Linux
+
+```bash
+make # For building
+
+./build/minish
+
+make clean # For cleanup
+```
+
+## Bugs
+
+- `Ctrl + D` fucks everything up!!!
+- Status color doesn't change on other cmd run for whatever reason
+  - fixed
+
+## Credits
+
+- [Argparse lib](https://github.com/cofyc/argparse)
+- [How to build a C shell](https://brennan.io/2015/01/16/write-a-shell-in-c/)
+  - [Source code (didn't copy btw)](https://github.com/brenns10/lsh)
+- [Hash table implementation](https://github.com/google/cwisstable)
