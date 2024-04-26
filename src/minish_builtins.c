@@ -19,6 +19,8 @@ builtin_t minish_builtins[] = {{"cd", minish_cd},
                                {"pathls", minish_path_list},
                                {"pathadd", minish_path_add},
                                {"pathrm", minish_path_remove},
+                               {"bg", minish_process_run_bg},
+                               {"fg", minish_process_run_fg},
                                {"procls", minish_process_ls},
                                {"prockill", minish_process_kill},
                                {"procstop", minish_process_stop},
@@ -72,28 +74,28 @@ int minish_cd(char **args, int *exit_status) {
 int minish_ls(char **args, int *exit_status) {
   char *directory = (args[1] == NULL) ? "." : args[1];
 
-  DIR *d;
-  struct dirent *dir;
-  d = opendir(directory);
+  DIR *dir;
+  struct dirent *ent;
+  dir = opendir(directory);
 
-  if (d) {
-    while ((dir = readdir(d)) != NULL) {
-      if (dir->d_name[0] == '.') {
+  if (dir) {
+    while ((ent = readdir(dir)) != NULL) {
+      if (ent->d_name[0] == '.') {
         continue;
       }
-      switch (dir->d_type) {
+      switch (ent->d_type) {
         case 4:
-          printf(COLOR_BLUE_BOLD "\t%s/\n" COLOR_RESET, dir->d_name);
+          printf(COLOR_BLUE_BOLD "\t%s/\n" COLOR_RESET, ent->d_name);
           break;
         case 10:
-          printf(COLOR_GREEN_ITALIC "\t%s\n" COLOR_RESET, dir->d_name);
+          printf(COLOR_GREEN_ITALIC "\t%s\n" COLOR_RESET, ent->d_name);
           break;
         default:
-          printf("\t%s\n", dir->d_name);
+          printf("\t%s\n", ent->d_name);
           break;
       }
     }
-    *exit_status = closedir(d);
+    *exit_status = closedir(dir);
   } else {
     perror("minish");
     *exit_status = 1;

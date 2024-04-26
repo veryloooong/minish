@@ -20,11 +20,9 @@ int minish_run_process(char **args, int *exit_status) {
     perror("minish");
     *exit_status = 1;
   } else if (pid == 0) {
-    // TODO: Make this run from our own path instead of the system's
     char *executable = minish_path_find(args[0]);
     if (executable != NULL) {
       args[0] = executable;
-      // fprintf(stderr, "minish: using %s\n", executable);
     }
     if (execve(args[0], args, NULL) == -1) {
       perror("minish");
