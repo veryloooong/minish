@@ -36,11 +36,12 @@ A `mini`mal `sh`ell written in C.
   - [x] `pathrm`
   - [x] Now make them run with path
 - The process manager (`minish_process.c`)
-  - [ ] `fg` / `bg`
-  - [ ] `procls`
-  - [ ] `prockill`
-  - [ ] `procstop`
-  - [ ] `proccont`
+  - [x] `fg` / `bg`
+    - [ ] Zombie processes don't auto wait
+  - [x] `procls`
+  - [x] `prockill`
+  - [x] `procstop`
+  - [x] `proccont`
 - Other
   - [ ] Add control key handling (`Ctrl + D`, `Ctrl + Z`, etc.)
     - [ ] `Ctrl + C` interrupts and kills foreground task
