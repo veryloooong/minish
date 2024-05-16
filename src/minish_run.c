@@ -1,5 +1,6 @@
 #include "../include/minish_run.h"
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +8,7 @@
 #include <unistd.h>
 
 #include "../include/colors.h"
+#include "../include/main.h"
 #include "../include/minish_builtins.h"
 #include "../include/minish_path.h"
 #include "../include/minish_readline.h"
@@ -55,6 +57,11 @@ int minish_execute(char **args, int *exit_status) {
   return minish_run_process(args, exit_status);
 }
 
+void sigint_handler(int sig __UNUSED) {
+  printf("\n");
+  fflush(stdout);
+}
+
 int minish_main_loop(void) {
   int operation_status = 0;
 
@@ -63,6 +70,7 @@ int minish_main_loop(void) {
   int run_state = 1;
 
   do {
+    signal(SIGINT, sigint_handler);
     char *status_color = operation_status == 0 ? COLOR_GREEN_BOLD : COLOR_RED_BOLD;
     printf("minish %s>%s ", status_color, COLOR_RESET);
     line = minish_read_line();
