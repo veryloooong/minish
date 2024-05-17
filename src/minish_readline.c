@@ -19,6 +19,7 @@ char *minish_read_line(void) {
   }
 
   while ((ch = getchar()) != EOF && ch != '\n') {
+    // while ((ch = getchar()) != '\n') {
     input[input_len++] = ch;
     if (input_len >= input_cap) {
       input_cap += CHUNK_SIZE;
@@ -127,6 +128,14 @@ char **minish_make_args(char *line) {
     }
 
     token = tokenize(current, &current);
+  }
+
+  extern int verbose;
+
+  if (verbose) {
+    for (size_t i = 0; i < token_buffer_len; i++) {
+      printf("Token %lu: %s\n", i, token_buffer[i]);
+    }
   }
 
   token_buffer[token_buffer_len] = NULL;

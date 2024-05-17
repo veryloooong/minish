@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "../include/argparse.h"
@@ -9,9 +10,10 @@ const char *usages[] = {
     NULL,
 };
 
+int verbose = 0;
+
 int main(int argc, const char **argv) {
   int use_env = 0;
-  int verbose = 0;
 
   struct argparse_option options[] = {
       OPT_HELP(),

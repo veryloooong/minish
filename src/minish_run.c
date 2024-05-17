@@ -57,14 +57,15 @@ int minish_execute(char **args, int *exit_status) {
   return minish_run_process(args, exit_status);
 }
 
+volatile int operation_status = 0;
+
 void sigint_handler(int sig __UNUSED) {
   printf("\n");
+  operation_status = 1;
   fflush(stdout);
 }
 
 int minish_main_loop(void) {
-  int operation_status = 0;
-
   char *line;
   char **args;
   int run_state = 1;
@@ -72,7 +73,9 @@ int minish_main_loop(void) {
   do {
     signal(SIGINT, sigint_handler);
     char *status_color = operation_status == 0 ? COLOR_GREEN_BOLD : COLOR_RED_BOLD;
-    printf("minish %s>%s ", status_color, COLOR_RESET);
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    printf("minish (%s) %s>%s ", cwd, status_color, COLOR_RESET);
     line = minish_read_line();
     args = minish_make_args(line);
     run_state = minish_execute(args, &operation_status);
