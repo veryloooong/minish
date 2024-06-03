@@ -14,6 +14,20 @@
 #include "../include/minish_readline.h"
 
 int minish_run_process(char **args, int *exit_status) {
+  char *shell_cmd = "/bin/sh";
+  char *run_shell = malloc(strlen(shell_cmd) + 10 + strlen(args[0]));
+  run_shell[0] = '\0';
+  strcat(run_shell, shell_cmd);
+  strcat(run_shell, " ");
+  strcat(run_shell, args[0]);
+
+  if (system(run_shell) == 0) {
+    *exit_status = 0;
+    free(run_shell);
+    return 1;
+  }
+  free(run_shell);
+
   pid_t pid;
   int status_code;
 
@@ -29,6 +43,7 @@ int minish_run_process(char **args, int *exit_status) {
     if (execve(args[0], args, NULL) == -1) {
       perror("minish");
     }
+
     *exit_status = 1;
     exit(EXIT_FAILURE);
   } else {
@@ -78,7 +93,7 @@ int minish_main_loop(void) {
     printf("minish (%s) %s>%s ", cwd, status_color, COLOR_RESET);
     line = minish_read_line();
     args = minish_make_args(line);
-    run_state = minish_execute(args, &operation_status);
+    run_state = minish_execute(args, (int *)&operation_status);
 
     free(line);
     free(args);
