@@ -15,11 +15,12 @@
 
 int minish_run_process(char **args, int *exit_status) {
   char *shell_cmd = "/bin/sh";
-  char *run_shell = malloc(strlen(shell_cmd) + 10 + strlen(args[0]));
+  char *run_shell = malloc(strlen(shell_cmd) + 20 + strlen(args[0]));
   run_shell[0] = '\0';
   strcat(run_shell, shell_cmd);
   strcat(run_shell, " ");
   strcat(run_shell, args[0]);
+  strcat(run_shell, " 2>/dev/null");
 
   if (system(run_shell) == 0) {
     *exit_status = 0;
