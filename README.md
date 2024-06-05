@@ -27,7 +27,7 @@ A `mini`mal `sh`ell written in C.
   - [x] `make_args`
 - The execution utils (`minish_run.c`)
   - [x] `run`
-    - [ ] Run processes in foreground or background mode
+    - [x] Run processes in foreground or background mode
     - [x] Use our own path (currently delegated to system PATH because `execvp`)
   - [x] `execute`
 - The path variable commands (`minish_path.c`)
@@ -36,14 +36,15 @@ A `mini`mal `sh`ell written in C.
   - [x] `pathrm`
   - [x] Now make them run with path
 - The process manager (`minish_process.c`)
-  - [ ] `fg` / `bg`
-  - [ ] `procls`
-  - [ ] `prockill`
-  - [ ] `procstop`
-  - [ ] `proccont`
+  - [x] `fg` / `bg`
+    - [ ] Zombie processes don't auto wait
+  - [x] `procls`
+  - [x] `prockill`
+  - [x] `procstop`
+  - [x] `proccont`
 - Other
   - [ ] Add control key handling (`Ctrl + D`, `Ctrl + Z`, etc.)
-    - [ ] `Ctrl + C` interrupts and kills foreground task
+    - [x] `Ctrl + C` interrupts and kills foreground task
     - [ ] `Ctrl + D` exits shell 
   - [x] Makefile
   - [x] Colours
@@ -69,8 +70,6 @@ make clean # For cleanup
 ## Bugs
 
 - `Ctrl + D` fucks everything up!!!
-- Status color doesn't change on other cmd run for whatever reason
-  - fixed
 
 ## Credits
 

@@ -1,5 +1,6 @@
 #include "../include/minish_run.h"
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,11 +8,27 @@
 #include <unistd.h>
 
 #include "../include/colors.h"
+#include "../include/main.h"
 #include "../include/minish_builtins.h"
 #include "../include/minish_path.h"
 #include "../include/minish_readline.h"
 
 int minish_run_process(char **args, int *exit_status) {
+  char *shell_cmd = "/bin/sh";
+  char *run_shell = malloc(strlen(shell_cmd) + 20 + strlen(args[0]));
+  run_shell[0] = '\0';
+  strcat(run_shell, shell_cmd);
+  strcat(run_shell, " ");
+  strcat(run_shell, args[0]);
+  strcat(run_shell, " 2>/dev/null");
+
+  if (system(run_shell) == 0) {
+    *exit_status = 0;
+    free(run_shell);
+    return 1;
+  }
+  free(run_shell);
+
   pid_t pid;
   int status_code;
 
@@ -20,15 +37,14 @@ int minish_run_process(char **args, int *exit_status) {
     perror("minish");
     *exit_status = 1;
   } else if (pid == 0) {
-    // TODO: Make this run from our own path instead of the system's
     char *executable = minish_path_find(args[0]);
     if (executable != NULL) {
       args[0] = executable;
-      // fprintf(stderr, "minish: using %s\n", executable);
     }
     if (execve(args[0], args, NULL) == -1) {
       perror("minish");
     }
+
     *exit_status = 1;
     exit(EXIT_FAILURE);
   } else {
@@ -57,19 +73,28 @@ int minish_execute(char **args, int *exit_status) {
   return minish_run_process(args, exit_status);
 }
 
-int minish_main_loop(void) {
-  int operation_status = 0;
+volatile int operation_status = 0;
 
+void sigint_handler(int sig __UNUSED) {
+  printf("\n");
+  operation_status = 1;
+  fflush(stdout);
+}
+
+int minish_main_loop(void) {
   char *line;
   char **args;
   int run_state = 1;
 
   do {
+    signal(SIGINT, sigint_handler);
     char *status_color = operation_status == 0 ? COLOR_GREEN_BOLD : COLOR_RED_BOLD;
-    printf("minish %s>%s ", status_color, COLOR_RESET);
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    printf("minish (%s) %s>%s ", cwd, status_color, COLOR_RESET);
     line = minish_read_line();
     args = minish_make_args(line);
-    run_state = minish_execute(args, &operation_status);
+    run_state = minish_execute(args, (int *)&operation_status);
 
     free(line);
     free(args);
