@@ -13,7 +13,87 @@
 #include <unistd.h>
 
 #include "../include/main.h"
+#include "../include/minish_path.h"
 #include "../include/minish_run.h"
+
+typedef struct process_t {
+  pid_t pid;
+  char *name;
+  struct process_t *next;
+} Process;
+
+static Process *processes = NULL;
+
+void minish_process_add(pid_t pid, const char *name) {
+  Process *new_process = malloc(sizeof(Process));
+  new_process->pid = pid;
+  new_process->name = malloc(strlen(name) + 1);
+  strncpy(new_process->name, name, strlen(name) + 1);
+  new_process->next = processes;
+  processes = new_process;
+}
+
+void minish_process_remove(pid_t pid) {
+  Process *current = processes;
+  Process *previous = NULL;
+
+  while (current != NULL) {
+    if (current->pid == pid) {
+      if (previous == NULL) {
+        processes = current->next;
+      } else {
+        previous->next = current->next;
+      }
+
+      free(current->name);
+      free(current);
+
+      return;
+    }
+
+    previous = current;
+    current = current->next;
+  }
+}
+
+void minish_process_remove_ended(void) {
+  Process *current = processes;
+  Process *previous = NULL;
+
+  while (current != NULL) {
+    pid_t pid = current->pid;
+    int status;
+    if (waitpid(pid, &status, WNOHANG) != 0) {
+      if (previous == NULL) {
+        processes = current->next;
+      } else {
+        previous->next = current->next;
+      }
+
+      free(current->name);
+      free(current);
+
+      current = previous == NULL ? processes : previous->next;
+    } else {
+      previous = current;
+      current = current->next;
+    }
+  }
+}
+
+void minish_process_cleanup(void) {
+  Process *current = processes;
+  Process *next;
+
+  while (current != NULL) {
+    next = current->next;
+    free(current->name);
+    free(current);
+    current = next;
+  }
+
+  processes = NULL;
+}
 
 int string_ends_with(const char *str, const char *suffix) {
   int str_len = strlen(str);
@@ -58,30 +138,69 @@ int minish_process_run_bg(char **args, int *exit_status) {
     *exit_status = 1;
     return 1;
   } else {
+    char *shell_cmd = "/bin/sh";
+    char *run_shell = malloc(strlen(shell_cmd) + 20 + strlen(args[0]));
+    run_shell[0] = '\0';
+    strcat(run_shell, shell_cmd);
+    strcat(run_shell, " ");
+    strcat(run_shell, args[0]);
+    strcat(run_shell, " 2>/dev/null");
+
+    if (system(run_shell) == 0) {
+      *exit_status = 0;
+      free(run_shell);
+      return 1;
+    }
+    free(run_shell);
+
     pid_t pid = fork();
     if (pid == 0) {
       consume_first_arg(args);
-      minish_execute(args, exit_status);
+      // minish_execute(args, exit_status);
+      char *executable = minish_path_find(args[0]);
+      if (executable != NULL) {
+        args[0] = executable;
+      }
+      if (execve(args[0], args, NULL) == -1) {
+        perror("minish");
+      }
+
+      *exit_status = 1;
+      exit(EXIT_FAILURE);
       return 0;
     } else if (pid < 0) {
-      perror("minish");
       *exit_status = 1;
       return 1;
     } else {
+      minish_process_add(pid, args[1]);
       waitpid(pid, NULL, WNOHANG);
       return 1;
     }
   }
 }
 
+// int minish_process_ls(char **args __UNUSED, int *exit_status) {
+//   pid_t ppid = getpid();
+
+//   char str[50];
+
+//   sprintf(str, "pgrep -P %d -l", ppid);
+
+//   system(str);
+
+//   *exit_status = 0;
+//   return 1;
+// }
+
 int minish_process_ls(char **args __UNUSED, int *exit_status) {
-  pid_t ppid = getpid();
+  minish_process_remove_ended();
 
-  char str[50];
+  Process *current = processes;
 
-  sprintf(str, "pgrep -P %d -l", ppid);
-
-  system(str);
+  while (current != NULL) {
+    printf("%d %s\n", current->pid, current->name);
+    current = current->next;
+  }
 
   *exit_status = 0;
   return 1;

@@ -3,6 +3,7 @@
 
 #include "../include/argparse.h"
 #include "../include/minish_path.h"
+#include "../include/minish_process.h"
 #include "../include/minish_run.h"
 
 const char *usages[] = {
@@ -35,6 +36,7 @@ int main(int argc, const char **argv) {
   int status = minish_main_loop();
 
   minish_path_destroy();
+  minish_process_cleanup();
 
   return status;
 }
