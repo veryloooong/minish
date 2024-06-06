@@ -1,2 +1,1 @@
-echo "one"
-echo "two"
+echo $((2+5))
