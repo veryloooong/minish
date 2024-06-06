@@ -42,7 +42,7 @@ int minish_cd(char **args, int *exit_status) {
   if (args[1] == NULL) {
     char *home_dir = getenv("HOME");
     if (home_dir == NULL) {
-      fprintf(stderr, "lsh: dir: no $HOME variable set\n");
+      fprintf(stderr, "minish: dir: no $HOME variable set\n");
       *exit_status = 1;
     } else {
       if (chdir(home_dir) != 0) {
