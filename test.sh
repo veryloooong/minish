@@ -1,1 +1,4 @@
-echo $((2+5))
+echo "one"
+echo "two"
+
+gcc -o test test.c
