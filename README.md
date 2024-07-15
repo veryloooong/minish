@@ -37,7 +37,7 @@ A `mini`mal `sh`ell written in C.
   - [x] Now make them run with path
 - The process manager (`minish_process.c`)
   - [x] `fg` / `bg`
-    - [ ] Zombie processes don't auto wait
+    - [x] Zombie processes don't auto wait
   - [x] `procls`
   - [x] `prockill`
   - [x] `procstop`
@@ -48,7 +48,7 @@ A `mini`mal `sh`ell written in C.
     - [ ] `Ctrl + D` exits shell 
   - [x] Makefile
   - [x] Colours
-  - [ ] `cwd` in shell prompt
+  - [x] `cwd` in shell prompt
   - [ ] Tab completion (nah id lose)
 
 ## Instructions
